@@ -268,11 +268,13 @@ def check_and_replace(symbol, openSellOrders, openBuyOrders, pastSellTrades, pas
                         if currentPrice > float(pastTrades[i]['price']):
                             amountToBuy = float(pastTrades[i]['amount'])
                             price = float(pastTrades[i]['price'])
+                            time.sleep(1)
                             buy_order = orders.new_order.buy_order(symbol, amountToBuy, price, 'exchange limit', sandbox)
                             print(buy_order)
                         else:
                             amountToSell = float(pastTrades[i]['amount'])
                             price = float(pastTrades[i]['price'])
+                            time.sleep(1)
                             sell_order = orders.new_order.sell_order(symbol, amountToSell, price, 'exchange limit', sandbox)
                             print(sell_order)
 
