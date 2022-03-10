@@ -265,14 +265,14 @@ def check_and_replace(symbol, openSellOrders, openBuyOrders, pastSellTrades, pas
             else:
                 for i in range(1, totalOrdersToReplace):
                     try:
-                        if currentPrice > pastTrades[i]['price']:
-                            amountToBuy = pastTrades[i]['amount']
-                            price = pastTrades[i]['price']
+                        if currentPrice > float(pastTrades[i]['price']):
+                            amountToBuy = float(pastTrades[i]['amount'])
+                            price = float(pastTrades[i]['price'])
                             buy_order = orders.new_order.buy_order(symbol, amountToBuy, price, 'exchange limit', sandbox)
                             print(buy_order)
                         else:
-                            amountToSell = pastTrades[i]['amount']
-                            price = pastTrades[i]['price']
+                            amountToSell = float(pastTrades[i]['amount'])
+                            price = float(pastTrades[i]['price'])
                             sell_order = orders.new_order.sell_order(symbol, amountToSell, price, 'exchange limit', sandbox)
                             print(sell_order)
 
