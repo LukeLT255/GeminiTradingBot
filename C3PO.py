@@ -23,10 +23,11 @@ def make_dem_trades():
         availableCash = get_current_cash_balance(availableBalances)
         currentCoinBalance = get_current_coins_owned(availableBalances, symbol)
         tickSize = get_tick_size(symbol)
-        cashAmountToBuy = 25
-        ordersToPlace = 50
+        cashAmountToBuy = 50
+        ordersToPlace = 10
         amountToBuy = round(cashAmountToBuy / currentPrice, tickSize)
         amountToSell = round(currentCoinBalance / ordersToPlace, tickSize)
+
         time.sleep(1)
         pastBuyTrades = get_past_buy_trades(symbol)
         time.sleep(1)
