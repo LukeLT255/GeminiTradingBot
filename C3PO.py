@@ -8,7 +8,7 @@ import time
 
 sandbox = True
 
-symbols = ["ETHUSD", "BTCUSD"]
+symbols = ["ETHUSD"]
 
 
 
