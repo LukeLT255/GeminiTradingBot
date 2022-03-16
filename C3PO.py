@@ -54,12 +54,12 @@ def make_dem_trades():
 
         if len(openSellOrders) == 0 and len(openBuyOrders) == 0 and supportLevel < currentPrice < resistanceLevel:  # sets up grid if there are no open orders
             print('Grid Start-Up')
-            set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell, EVEN_GRID)
+            set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell, EVEN_GRID, tickSize)
 
         elif RESET_GRID: # cancels all open orders and resets grid
             orders.cancel_order.cancel_all_active_orders(sandbox)
             print('Grid Reset')
-            set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell, EVEN_GRID)
+            set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell, EVEN_GRID, tickSize)
 
         else: # checks open orders and previous filled orders to place new orders on the grid
             check_and_replace(symbol, openSellOrders, openBuyOrders, pastSellTrades, pastBuyTrades, pastTrades, currentPrice, EVEN_GRID, ordersToPlace)
@@ -214,7 +214,7 @@ def get_past_trades(symbol):
 
 
 
-def set_up_grid(symbol, low, high, currentPrice, gridLevels, amountToBuy, amountToSell, EVEN_GRID):
+def set_up_grid(symbol, low, high, currentPrice, gridLevels, amountToBuy, amountToSell, EVEN_GRID, tickSize):
     gridRange = high - low
     distance_between_orders = gridRange / gridLevels
     grids = []
@@ -231,7 +231,7 @@ def set_up_grid(symbol, low, high, currentPrice, gridLevels, amountToBuy, amount
         if level > currentPrice: #keeps track of how many sell orders initially placed
             totalSellOrders += 1
 
-    initialAmountToBuy = totalSellOrders * amountToBuy
+    initialAmountToBuy = round(totalSellOrders * amountToBuy, tickSize)
 
     time.sleep(1)
     startUpBuy = orders.new_order.buy_order(symbol, initialAmountToBuy, currentPrice, 'exchange limit', sandbox, options='fill-or-kill')
