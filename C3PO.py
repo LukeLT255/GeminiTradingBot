@@ -284,6 +284,7 @@ def check_and_replace(symbol, openSellOrders, openBuyOrders, pastTrades, current
         print('Past trades: ')
         for trade in pastTrades:
             print(trade)
+            print('\n')
 
         totalOrdersToReplace = ordersToPlace - totalOpenOrders
         if totalOrdersToReplace == 0:
