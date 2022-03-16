@@ -38,10 +38,10 @@ def make_dem_trades():
         EVEN_GRID = False # starts grid with even # of buys and sells; otherwise, grid is started with buys below current price and sells above
 
         if currentPrice < supportLevel: # Sells all current positions, and resets grid if price is below resistance level
-            orders.new_order.sell_order(symbol, currentCoinBalance, currentPrice, 'exchange limit', sandbox, options='kill-or-fill')
+            orders.new_order.sell_order(symbol, currentCoinBalance, round(currentPrice*1.05, 2), 'exchange limit', sandbox, options='immediate-or-cancel')
             RESET_GRID = True
         elif currentPrice > resistanceLevel: #take profit if current price is higher than resistance level
-            orders.new_order.sell_order(symbol, currentCoinBalance, currentPrice, 'exchange limit', sandbox, options='kill-or-fill')
+            orders.new_order.sell_order(symbol, currentCoinBalance, round(currentPrice*1.05, 2), 'exchange limit', sandbox, options='immediate-or-cancel')
             RESET_GRID = True
         else:
             RESET_GRID = False
@@ -234,7 +234,7 @@ def set_up_grid(symbol, low, high, currentPrice, gridLevels, amountToBuy, amount
     initialAmountToBuy = round(totalSellOrders * amountToBuy, tickSize)
 
     time.sleep(1)
-    startUpBuy = orders.new_order.buy_order(symbol, initialAmountToBuy, currentPrice, 'exchange limit', sandbox, options='fill-or-kill')
+    startUpBuy = orders.new_order.buy_order(symbol, initialAmountToBuy, round(currentPrice*1.05, 2), 'exchange limit', sandbox, options='immediate-or-cancel')
     print('Start Up Buy: ')
     print(startUpBuy)
 
