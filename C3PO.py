@@ -234,7 +234,7 @@ def set_up_grid(symbol, low, high, currentPrice, gridLevels, amountToBuy, amount
     initialAmountToBuy = totalSellOrders * amountToBuy
 
     time.sleep(1)
-    startUpBuy = orders.new_order.buy_order(symbol, initialAmountToBuy, currentPrice, 'fill-or-kill', sandbox, options=[])
+    startUpBuy = orders.new_order.buy_order(symbol, initialAmountToBuy, currentPrice, 'immediate-or-cancel', sandbox, options=[])
     print('Start Up Buy: ')
     print(startUpBuy)
 
