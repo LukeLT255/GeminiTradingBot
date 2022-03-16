@@ -271,10 +271,16 @@ def check_and_replace(symbol, openSellOrders, openBuyOrders, pastSellTrades, pas
         totalOpenOrders = len(openSellOrders) + len(openBuyOrders)
 
         print('All open buy orders: ')
-        print(openBuyOrders)
+        for order in openBuyOrders:
+            print(order)
+            print('\n')
+
 
         print('All open sell orders: ')
-        print(openSellOrders)
+        for order in openSellOrders:
+            print(order)
+            print('\n')
+
 
         totalOrdersToReplace = ordersToPlace - totalOpenOrders
         if totalOrdersToReplace == 0:
