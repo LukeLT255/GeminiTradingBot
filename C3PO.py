@@ -266,8 +266,16 @@ def set_up_grid(symbol, low, high, currentPrice, gridLevels, amountToBuy, amount
 def check_and_replace(symbol, openSellOrders, openBuyOrders, pastSellTrades, pastBuyTrades, pastTrades, currentPrice, EVEN_GRID, ordersToPlace ):
     if EVEN_GRID: # check and replace for even grid
         pass
+
     else: #check and replace for trailing grid
         totalOpenOrders = len(openSellOrders) + len(openBuyOrders)
+
+        print('All open buy orders: ')
+        print(openBuyOrders)
+
+        print('All open sell orders: ')
+        print(openSellOrders)
+
         totalOrdersToReplace = ordersToPlace - totalOpenOrders
         if totalOrdersToReplace == 0:
             print("Grid full")
@@ -283,13 +291,13 @@ def check_and_replace(symbol, openSellOrders, openBuyOrders, pastSellTrades, pas
                             price = float(pastTrades[i]['price'])
                             time.sleep(1)
                             buy_order = orders.new_order.buy_order(symbol, amountToBuy, price, 'exchange limit', sandbox)
-                            print(buy_order)
+                            print(f'Buy order placed: {buy_order}')
                         else:
                             amountToSell = float(pastTrades[i]['amount'])
                             price = float(pastTrades[i]['price'])
                             time.sleep(1)
                             sell_order = orders.new_order.sell_order(symbol, amountToSell, price, 'exchange limit', sandbox)
-                            print(sell_order)
+                            print(f'Sell order placed: {sell_order}')
 
                     except KeyError:
                         print('Key error exception')
