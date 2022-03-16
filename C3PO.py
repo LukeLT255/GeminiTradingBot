@@ -26,7 +26,7 @@ def make_dem_trades():
         cashAmountToBuy = 50
         ordersToPlace = 10
         amountToBuy = round(cashAmountToBuy / currentPrice, tickSize)
-        amountToSell = round(currentCoinBalance / ordersToPlace, tickSize)
+        amountToSell = amountToBuy
 
         time.sleep(1)
         pastBuyTrades = get_past_buy_trades(symbol)
@@ -218,13 +218,23 @@ def set_up_grid(symbol, low, high, currentPrice, gridLevels, amountToBuy, amount
     gridRange = high - low
     distance_between_orders = gridRange / gridLevels
     grids = []
+    totalSellOrders = 0
 
     print('Current price: ' + f'{currentPrice}')
     print('High: ' + f'{high}')
     print('Low: ' + f'{low}')
 
-    for i in range(gridLevels):
-        grids.append(round(low + distance_between_orders * i, 2))
+
+    for i in range(gridLevels): #creates a list of grid levels
+        level = round(low + distance_between_orders * i, 2)
+        grids.append(level)
+        if level > currentPrice: #keeps track of how many sell orders initially placed
+            totalSellOrders += 1
+
+    initialAmountToBuy = totalSellOrders * amountToBuy
+
+    startUpBuy = orders.new_order.buy_order(symbol, initialAmountToBuy, currentPrice, 'immediate-or-cancel', sandbox, options=[])
+    print(startUpBuy)
 
     if not EVEN_GRID:
         for level in grids:
