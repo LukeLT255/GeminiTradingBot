@@ -62,7 +62,7 @@ def make_dem_trades():
             set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell, EVEN_GRID, tickSize)
 
         else: # checks open orders and previous filled orders to place new orders on the grid
-            check_and_replace(symbol, openSellOrders, openBuyOrders, pastSellTrades, pastBuyTrades, pastTrades, currentPrice, EVEN_GRID, ordersToPlace)
+            check_and_replace(symbol, openSellOrders, openBuyOrders, pastTrades, currentPrice, EVEN_GRID, ordersToPlace)
 
 
 
@@ -263,50 +263,52 @@ def set_up_grid(symbol, low, high, currentPrice, gridLevels, amountToBuy, amount
     return
 
 
-def check_and_replace(symbol, openSellOrders, openBuyOrders, pastSellTrades, pastBuyTrades, pastTrades, currentPrice, EVEN_GRID, ordersToPlace ):
+def check_and_replace(symbol, openSellOrders, openBuyOrders, pastTrades, currentPrice, EVEN_GRID, ordersToPlace):
     if EVEN_GRID: # check and replace for even grid
         pass
 
     else: #check and replace for trailing grid
         totalOpenOrders = len(openSellOrders) + len(openBuyOrders)
 
-        print('All open buy orders: ')
-        for order in openBuyOrders:
-            print(order)
-            print('\n')
+        # print('All open buy orders: ')
+        # for order in openBuyOrders:
+        #     print(order)
+        #     print('\n')
 
 
-        print('All open sell orders: ')
-        for order in openSellOrders:
-            print(order)
-            print('\n')
+        # print('All open sell orders: ')
+        # for order in openSellOrders:
+        #     print(order)
+        #     print('\n')
 
+        print('Past trades: ')
+        for trade in pastTrades:
+            print(trade)
 
         totalOrdersToReplace = ordersToPlace - totalOpenOrders
         if totalOrdersToReplace == 0:
             print("Grid full")
             return
+        elif totalOrdersToReplace == 1:
+            print('No grid levels ready to be replaced')
         else:
-            if totalOrdersToReplace <= 1:
-                print('No grid levels ready to be replaced')
-            else:
-                for i in range(1, totalOrdersToReplace):
-                    try:
-                        if currentPrice > float(pastTrades[i]['price']):
-                            amountToBuy = float(pastTrades[i]['amount'])
-                            price = float(pastTrades[i]['price'])
-                            time.sleep(1)
-                            buy_order = orders.new_order.buy_order(symbol, amountToBuy, price, 'exchange limit', sandbox)
-                            print(f'Buy order placed: {buy_order}')
-                        else:
-                            amountToSell = float(pastTrades[i]['amount'])
-                            price = float(pastTrades[i]['price'])
-                            time.sleep(1)
-                            sell_order = orders.new_order.sell_order(symbol, amountToSell, price, 'exchange limit', sandbox)
-                            print(f'Sell order placed: {sell_order}')
+            for i in range(1, totalOrdersToReplace):
+                try:
+                    if currentPrice > float(pastTrades[i]['price']):
+                        amountToBuy = float(pastTrades[i]['amount'])
+                        price = float(pastTrades[i]['price'])
+                        time.sleep(1)
+                        buy_order = orders.new_order.buy_order(symbol, amountToBuy, price, 'exchange limit', sandbox)
+                        print(f'Buy order placed: {buy_order}')
+                    else:
+                        amountToSell = float(pastTrades[i]['amount'])
+                        price = float(pastTrades[i]['price'])
+                        time.sleep(1)
+                        sell_order = orders.new_order.sell_order(symbol, amountToSell, price, 'exchange limit', sandbox)
+                        print(f'Sell order placed: {sell_order}')
 
-                    except KeyError:
-                        print('Key error exception')
+                except KeyError:
+                    print('Key error exception')
 
     print('\n')
     return
