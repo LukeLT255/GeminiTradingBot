@@ -110,6 +110,7 @@ def get_low(symbol, lookbackAmount, lookbackInterval, average):
 
 
 def get_current_price(symbol):
+    time.sleep(1)
     prices = coininfo.public_info.get_price_feed(sandbox)
     price = 0
     for coin in prices:
