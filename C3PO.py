@@ -37,13 +37,13 @@ def make_dem_trades():
         hundredDayAverage = get_hundred_day_average(symbol)
         EVEN_GRID = False # starts grid with even # of buys and sells; otherwise, grid is started with buys below current price and sells above
 
-        if currentPrice < supportLevel: # Sells all current positions, and resets grid if price is below resistance level
+        if currentPrice < supportLevel: # Sells all current positions, and resets grid if price is below support level
             orders.new_order.sell_order(symbol, currentCoinBalance, round(currentPrice*0.95, 2), 'exchange limit', sandbox, options='immediate-or-cancel')
-            orders.cancel_order.cancel_all_active_orders(sandbox)
+
             RESET_GRID = True
         elif currentPrice > resistanceLevel: #take profit if current price is higher than resistance level
             orders.new_order.sell_order(symbol, currentCoinBalance, round(currentPrice*0.95, 2), 'exchange limit', sandbox, options='immediate-or-cancel')
-            orders.cancel_order.cancel_all_active_orders(sandbox)
+
             RESET_GRID = True
         else:
             RESET_GRID = False
