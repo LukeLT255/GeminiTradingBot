@@ -28,13 +28,13 @@ def make_dem_trades():
         amountToBuy = round(cashAmountToBuy / currentPrice, tickSize)
         amountToSell = amountToBuy
 
-        time.sleep(1)
-        pastBuyTrades = get_past_buy_trades(symbol)
-        time.sleep(1)
-        pastSellTrades = get_past_sell_trades(symbol)
+        # time.sleep(1)
+        # pastBuyTrades = get_past_buy_trades(symbol)
+        # time.sleep(1)
+        # pastSellTrades = get_past_sell_trades(symbol)
         time.sleep(1)
         pastTrades = get_past_trades(symbol)
-        hundredDayAverage = get_hundred_day_average(symbol)
+        # hundredDayAverage = get_hundred_day_average(symbol)
         EVEN_GRID = False # starts grid with even # of buys and sells; otherwise, grid is started with buys below current price and sells above
 
         if currentPrice < supportLevel: # Sells all current positions, and resets grid if price is below support level
@@ -63,9 +63,12 @@ def make_dem_trades():
             print('Grid Reset')
             set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell, EVEN_GRID, tickSize)
 
-        else: # checks open orders and previous filled orders to place new orders on the grid
+        elif len(openBuyOrders) + len(openSellOrders) > 0: # checks open orders and previous filled orders to place new orders on the grid
             check_and_replace(symbol, openSellOrders, openBuyOrders, pastTrades, currentPrice, EVEN_GRID, ordersToPlace)
 
+        else:
+            print('f')
+            return
 
 
 def get_high(symbol, lookbackAmount, lookbackInterval, average):
