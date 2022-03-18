@@ -39,9 +39,11 @@ def make_dem_trades():
 
         if currentPrice < supportLevel: # Sells all current positions, and resets grid if price is below resistance level
             orders.new_order.sell_order(symbol, currentCoinBalance, round(currentPrice*0.95, 2), 'exchange limit', sandbox, options='immediate-or-cancel')
+            orders.cancel_order.cancel_all_active_orders(sandbox)
             RESET_GRID = True
         elif currentPrice > resistanceLevel: #take profit if current price is higher than resistance level
             orders.new_order.sell_order(symbol, currentCoinBalance, round(currentPrice*0.95, 2), 'exchange limit', sandbox, options='immediate-or-cancel')
+            orders.cancel_order.cancel_all_active_orders(sandbox)
             RESET_GRID = True
         else:
             RESET_GRID = False
