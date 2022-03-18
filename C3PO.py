@@ -14,7 +14,7 @@ symbols = ["ETHUSD"]
 
 def make_dem_trades():
     for symbol in symbols:
-
+        time.sleep(1)
         currentPrice = get_current_price(symbol)
         time.sleep(1)
         resistanceLevel = get_high(symbol, lookbackAmount=30, lookbackInterval='1day', average=True)
