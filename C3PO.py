@@ -17,8 +17,10 @@ def make_dem_trades():
         time.sleep(1)
         currentPrice = get_current_price(symbol)
         time.sleep(1)
-        resistanceLevel = get_high(symbol, lookbackAmount=30, lookbackInterval='1day', average=True)
-        supportLevel = get_low(symbol, lookbackAmount=30, lookbackInterval='1day', average=True)
+        lookBackAmount = 30
+        lookBackInterval = '1day'
+        resistanceLevel = get_high(symbol, lookBackAmount=lookBackAmount, lookBackInterval=lookBackInterval, average=True)
+        supportLevel = get_low(symbol, lookBackAmount=lookBackAmount, lookBackInterval=lookBackInterval, average=True)
         availableBalances = account.account_detail.get_available_balances(sandbox)
         availableCash = get_current_cash_balance(availableBalances)
         currentCoinBalance = get_current_coins_owned(availableBalances, symbol)
@@ -28,22 +30,16 @@ def make_dem_trades():
         amountToBuy = round(cashAmountToBuy / currentPrice, tickSize)
         amountToSell = amountToBuy
 
-        # time.sleep(1)
-        # pastBuyTrades = get_past_buy_trades(symbol)
-        # time.sleep(1)
-        # pastSellTrades = get_past_sell_trades(symbol)
         time.sleep(1)
         pastTrades = get_past_trades(symbol)
-        # hundredDayAverage = get_hundred_day_average(symbol)
+
         EVEN_GRID = False # starts grid with even # of buys and sells; otherwise, grid is started with buys below current price and sells above
 
-        if currentPrice < supportLevel: # Sells all current positions, and resets grid if price is below support level
-            orders.new_order.sell_order(symbol, currentCoinBalance, round(currentPrice*0.95, 2), 'exchange limit', sandbox, options='immediate-or-cancel')
-
+        if currentPrice < supportLevel: # If price below s level, it waits until price rises and does nothing
             RESET_GRID = True
         elif currentPrice > resistanceLevel: #take profit if current price is higher than resistance level
+            time.sleep(1)
             orders.new_order.sell_order(symbol, currentCoinBalance, round(currentPrice*0.95, 2), 'exchange limit', sandbox, options='immediate-or-cancel')
-
             RESET_GRID = True
         else:
             RESET_GRID = False
@@ -58,23 +54,27 @@ def make_dem_trades():
             print('Grid Start-Up')
             set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell, EVEN_GRID, tickSize)
 
-        elif RESET_GRID: # cancels all open orders and resets grid
-            orders.cancel_order.cancel_all_active_orders(sandbox)
+        elif RESET_GRID and supportLevel < currentPrice < resistanceLevel: # cancels all open orders and resets grid
+            time.sleep(1)
+            orderCancel = orders.cancel_order.cancel_all_active_orders(sandbox)
+            print(orderCancel)
             print('Grid Reset')
             set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell, EVEN_GRID, tickSize)
 
-        elif len(openBuyOrders) + len(openSellOrders) > 0: # checks open orders and previous filled orders to place new orders on the grid
+        elif len(openBuyOrders) + len(openSellOrders) > 0 and supportLevel < currentPrice < resistanceLevel: # checks open orders and previous filled orders to place new orders on the grid
             check_and_replace(symbol, openSellOrders, openBuyOrders, pastTrades, currentPrice, EVEN_GRID, ordersToPlace)
 
-        else:
-            print('f')
+        else: #cancels open orders and does nothing until current price is back between s and r
+            time.sleep(1)
+            orderCancel = orders.cancel_order.cancel_all_active_orders(sandbox)
+            print(orderCancel)
             return
 
 
-def get_high(symbol, lookbackAmount, lookbackInterval, average):
-    candles = coininfo.public_info.get_candles(symbol, sandbox, timeInterval=lookbackInterval)
+def get_high(symbol, lookBackAmount, lookBackInterval, average):
+    candles = coininfo.public_info.get_candles(symbol, sandbox, timeInterval=lookBackInterval)
     highs = []
-    timeFrame = lookbackAmount
+    timeFrame = lookBackAmount
     start = 0
 
     for m in range(start, timeFrame):
@@ -83,7 +83,7 @@ def get_high(symbol, lookbackAmount, lookbackInterval, average):
     highs.sort(reverse=True)
 
     if average:
-        high = sum(highs[0:20]) / 20
+        high = sum(highs[0:10]) / 10
     else:
         high = max(highs)
 
@@ -91,10 +91,10 @@ def get_high(symbol, lookbackAmount, lookbackInterval, average):
     return round(high, 2)
 
 
-def get_low(symbol, lookbackAmount, lookbackInterval, average):
-    candles = coininfo.public_info.get_candles(symbol, sandbox, timeInterval=lookbackInterval)
+def get_low(symbol, lookBackAmount, lookBackInterval, average):
+    candles = coininfo.public_info.get_candles(symbol, sandbox, timeInterval=lookBackInterval)
     lows = []
-    timeFrame = lookbackAmount
+    timeFrame = lookBackAmount
     start = 0
 
     for m in range(start, timeFrame):
