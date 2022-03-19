@@ -1,10 +1,16 @@
 import datetime
 import os
 import sys
-
+import logging
 import config
 from gemini import account, coininfo, orders
 import time
+
+logging.basicConfig(level=logging.INFO,
+                    format='{asctime} {levelname:<8} {message}',
+                    style='{',
+                    filename='%slog' % __file__[:-2],
+                    filemode='w')
 
 sandbox = True
 
@@ -51,14 +57,14 @@ def make_dem_trades():
         openBuyOrders = get_open_buy_orders(symbol)
 
         if len(openSellOrders) == 0 and len(openBuyOrders) == 0 and supportLevel < currentPrice < resistanceLevel:  # sets up grid if there are no open orders
-            print('Grid Start-Up')
+            logging.info('Grid Start-Up')
             set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell, EVEN_GRID, tickSize)
 
         elif RESET_GRID and supportLevel < currentPrice < resistanceLevel: # cancels all open orders and resets grid
             time.sleep(1)
             orderCancel = orders.cancel_order.cancel_all_active_orders(sandbox)
-            print(orderCancel)
-            print('Grid Reset')
+            logging.info(orderCancel)
+            logging.inf('Grid Reset')
             set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell, EVEN_GRID, tickSize)
 
         elif len(openBuyOrders) + len(openSellOrders) > 0 and supportLevel < currentPrice < resistanceLevel: # checks open orders and previous filled orders to place new orders on the grid
@@ -67,7 +73,7 @@ def make_dem_trades():
         else: #cancels open orders and does nothing until current price is back between s and r
             time.sleep(1)
             orderCancel = orders.cancel_order.cancel_all_active_orders(sandbox)
-            print(orderCancel)
+            logging.info(orderCancel)
             return
 
 
@@ -226,9 +232,9 @@ def set_up_grid(symbol, low, high, currentPrice, gridLevels, amountToBuy, amount
     grids = []
     totalSellOrders = 0
 
-    print('Current price: ' + f'{currentPrice}')
-    print('High: ' + f'{high}')
-    print('Low: ' + f'{low}')
+    logging.info('Current price: ' + f'{currentPrice}')
+    logging.info('High: ' + f'{high}')
+    logging.info('Low: ' + f'{low}')
 
 
     for i in range(gridLevels): #creates a list of grid levels
@@ -241,31 +247,31 @@ def set_up_grid(symbol, low, high, currentPrice, gridLevels, amountToBuy, amount
 
     time.sleep(1)
     startUpBuy = orders.new_order.buy_order(symbol, initialAmountToBuy, round(currentPrice*1.05, 2), 'exchange limit', sandbox, options='immediate-or-cancel')
-    print('Start Up Buy: ')
-    print(startUpBuy)
+    logging.info('Start Up Buy: ')
+    logging.info(startUpBuy)
 
     if not EVEN_GRID:
         for level in grids:
             if currentPrice > level:
                 time.sleep(1)
                 buy_order = orders.new_order.buy_order(symbol, amountToBuy, level, 'exchange limit', sandbox)
-                print(buy_order)
+                logging.info(buy_order)
             else:
                 time.sleep(1)
                 sell_order = orders.new_order.sell_order(symbol, amountToSell, level, 'exchange limit', sandbox)
-                print(sell_order)
+                logging.info(sell_order)
     else:
         for i, level in enumerate(grids):
             if i < (gridLevels / 2):
                 time.sleep(1)
                 buy_order = orders.new_order.buy_order(symbol, amountToBuy, level, 'exchange limit', sandbox)
-                print(buy_order)
+                logging.info(buy_order)
             else:
                 time.sleep(1)
                 sell_order = orders.new_order.sell_order(symbol, amountToSell, level, 'exchange limit', sandbox)
-                print(sell_order)
+                logging.info(sell_order)
 
-    print('\n')
+    logging.info('\n')
     return
 
 
@@ -287,17 +293,18 @@ def check_and_replace(symbol, openSellOrders, openBuyOrders, pastTrades, current
         #     print(order)
         #     print('\n')
 
-        print('Past trades: ')
-        for trade in pastTrades:
-            print(trade)
-            print('\n')
-
         totalOrdersToReplace = ordersToPlace - totalOpenOrders
+        logging.info('Past trades: ')
+        for i in range(totalOrdersToReplace):
+            logging.info(pastTrades[i])
+            logging.info('\n')
+
+
         if totalOrdersToReplace == 0:
-            print("Grid full")
+            logging.info("Grid full")
             return
         elif totalOrdersToReplace == 1:
-            print('No grid levels ready to be replaced')
+            logging.info('No grid levels ready to be replaced')
         else:
             for i in range(1, totalOrdersToReplace):
                 try:
@@ -306,18 +313,18 @@ def check_and_replace(symbol, openSellOrders, openBuyOrders, pastTrades, current
                         price = float(pastTrades[i]['price'])
                         time.sleep(1)
                         buy_order = orders.new_order.buy_order(symbol, amountToBuy, price, 'exchange limit', sandbox)
-                        print(f'Buy order placed: {buy_order}')
+                        logging.info(f'Buy order placed: {buy_order}')
                     else:
                         amountToSell = float(pastTrades[i]['amount'])
                         price = float(pastTrades[i]['price'])
                         time.sleep(1)
                         sell_order = orders.new_order.sell_order(symbol, amountToSell, price, 'exchange limit', sandbox)
-                        print(f'Sell order placed: {sell_order}')
+                        logging.info(f'Sell order placed: {sell_order}')
 
                 except KeyError:
-                    print('Key error exception')
+                    logging.error('Key error exception')
 
-    print('\n')
+    logging.info('\n')
     return
 
 
