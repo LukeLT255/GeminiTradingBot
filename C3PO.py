@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO,
                     format='{asctime} {levelname:<8} {message}',
                     style='{',
                     filename='%slog' % __file__[:-2],
-                    filemode='w')
+                    filemode='a')
 
 sandbox = True
 
