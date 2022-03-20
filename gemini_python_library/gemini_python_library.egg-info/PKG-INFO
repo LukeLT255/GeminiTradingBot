@@ -1,7 +1,7 @@
 Metadata-Version: 1.1
 Name: gemini-python-library
-Version: 0.0.1
-Summary: Modules for working with Gemini's API ina pythonic way
+Version: 0.0.2
+Summary: Modules for working with Gemini's API in a pythonic way
 Home-page: UNKNOWN
 Author: Luke Tyson
 Author-email: LukeLT25@gmail.com

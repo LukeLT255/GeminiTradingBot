@@ -6,7 +6,6 @@ coininfo/public_info.py
 gemini_python_library.egg-info/PKG-INFO
 gemini_python_library.egg-info/SOURCES.txt
 gemini_python_library.egg-info/dependency_links.txt
-gemini_python_library.egg-info/requires.txt
 gemini_python_library.egg-info/top_level.txt
 orders/__init__.py
 orders/cancel_order.py

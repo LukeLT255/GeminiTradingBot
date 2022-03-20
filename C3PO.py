@@ -27,7 +27,7 @@ def make_dem_trades():
         lookBackInterval = '1day'
         resistanceLevel = get_high(symbol, lookBackAmount=lookBackAmount, lookBackInterval=lookBackInterval, average=True)
         supportLevel = get_low(symbol, lookBackAmount=lookBackAmount, lookBackInterval=lookBackInterval, average=True)
-        availableBalances = account.account_detail.get_available_balances(sandbox)
+        availableBalances = account.account_detail.get_available_balances(config.gemini_api_key, config.gemini_api_secret, config.gemini_sandbox_api_key, config.gemini_sandbox_api_secret, sandbox)
         availableCash = get_current_cash_balance(availableBalances)
         currentCoinBalance = get_current_coins_owned(availableBalances, symbol)
         tickSize = get_tick_size(symbol)

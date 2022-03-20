@@ -9,7 +9,7 @@ import datetime
 
 
 
-def get_account_detail(sandbox: bool, account='primary'):  # returns account details
+def get_account_detail(api_key, api_secret, sandbox_api_key, sandbox_api_secret, sandbox: bool, account='primary'):  # returns account details
     t = datetime.datetime.now()
     nonce = str(int(time.mktime(t.timetuple()) * 1000))
 
@@ -17,8 +17,8 @@ def get_account_detail(sandbox: bool, account='primary'):  # returns account det
     endpoint = "/v1/account"
     url = base_url + endpoint
 
-    gemini_api_key = config.gemini_sandbox_api_key if sandbox else config.gemini_api_key
-    gemini_api_secret = config.gemini_sandbox_api_secret if sandbox else config.gemini_api_secret
+    gemini_api_key = sandbox_api_key if sandbox else api_key
+    gemini_api_secret = sandbox_api_secret if sandbox else api_secret
 
     payload_nonce = nonce
 
@@ -48,7 +48,7 @@ def get_account_detail(sandbox: bool, account='primary'):  # returns account det
     return account_detail
 
 
-def get_available_balances(sandbox: bool): #returns available balances
+def get_available_balances(api_key, api_secret, sandbox_api_key, sandbox_api_secret, sandbox: bool): #returns available balances
     t = datetime.datetime.now()
     nonce = str(int(time.mktime(t.timetuple()) * 1000))
 
@@ -56,8 +56,8 @@ def get_available_balances(sandbox: bool): #returns available balances
     endpoint = "/v1/balances"
     url = base_url + endpoint
 
-    gemini_api_key = config.gemini_sandbox_api_key if sandbox else config.gemini_api_key
-    gemini_api_secret = config.gemini_sandbox_api_secret if sandbox else config.gemini_api_secret
+    gemini_api_key = sandbox_api_key if sandbox else api_key
+    gemini_api_secret = sandbox_api_secret if sandbox else api_secret
 
     payload_nonce = nonce
 
