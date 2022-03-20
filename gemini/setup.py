@@ -21,5 +21,4 @@ setup(
     keywords='gemini',
     packages=find_packages(),
     install_requires=[open('requirements.txt').read()]
-
 )
