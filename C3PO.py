@@ -3,7 +3,7 @@ import os
 import sys
 import logging
 import config
-from gemini import account, coininfo, orders
+from gemini_python_library import account, coininfo, orders
 import time
 
 logging.basicConfig(level=logging.INFO,

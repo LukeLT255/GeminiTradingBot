@@ -10,7 +10,7 @@ Description: UNKNOWN
 Keywords: gemini
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable
-Classifier: Intended Audience :: Personal Use
-Classifier: Operating System :: Apple :: MacOS :: MacOS Mojave
+Classifier: Intended Audience :: Education
+Classifier: Operating System :: MacOS
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Programming Language :: Python :: 3

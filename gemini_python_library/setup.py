@@ -9,7 +9,7 @@ classifiers = [
 ]
 
 setup(
-    name='gemini',
+    name='gemini_python_library',
     version='0.0.1',
     description="Modules for working with Gemini's API ina pythonic way",
     long_description="",
@@ -18,7 +18,7 @@ setup(
     author_email='LukeLT25@gmail.com',
     license='MIT',
     classifiers=classifiers,
-    keywords='gemini',
+    keywords='gemini_python_library',
     packages=find_packages(),
     install_requires=[open('requirements.txt').read()]
 )
