@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 classifiers = [
     'Development Status :: 5 - Production/Stable',
-    'Intended Audience :: Personal Use',
-    'Operating System :: Apple :: MacOS :: MacOS Mojave',
+    'Intended Audience :: Education',
+    'Operating System :: MacOS',
     'License :: OSI Approved :: MIT License',
     'Programming Language :: Python :: 3'
 ]
