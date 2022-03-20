@@ -20,5 +20,5 @@ setup(
     classifiers=classifiers,
     keywords='gemini_python_library',
     packages=find_packages(),
-    install_requires=[open('requirements.txt').read()]
+    install_requires=['']
 )
