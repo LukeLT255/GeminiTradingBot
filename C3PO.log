@@ -1,1 +1,8 @@
 2022-03-19 15:18:26,664 INFO     {'result': 'ok', 'details': {'cancelledOrders': [], 'cancelRejects': []}}
+2022-03-20 17:11:40,144 INFO     Past trades: 
+2022-03-20 17:11:40,145 INFO     {'price': '2873.17', 'amount': '0.01696', 'timestamp': 1647778051, 'timestampms': 1647778051307, 'type': 'Buy', 'aggressor': False, 'fee_currency': 'USD', 'fee_amount': '0.00', 'tid': 1660761331, 'order_id': '1659213282', 'exchange': 'gemini', 'is_auction_fill': False, 'is_clearing_fill': False, 'symbol': 'ETHUSD'}
+2022-03-20 17:11:40,146 INFO     
+
+2022-03-20 17:11:40,146 INFO     No grid levels ready to be replaced
+2022-03-20 17:11:40,146 INFO     
+

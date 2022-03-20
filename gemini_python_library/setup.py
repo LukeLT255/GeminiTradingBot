@@ -10,7 +10,7 @@ classifiers = [
 
 setup(
     name='gemini_python_library',
-    version='0.0.2',
+    version='0.0.3',
     description="Modules for working with Gemini's API in a pythonic way",
     long_description="",
     url='',
