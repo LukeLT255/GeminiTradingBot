@@ -1,10 +1,7 @@
-import datetime
-import os
-import sys
 import logging
 import config
-from gemini_python_library import account, coininfo, orders
 import time
+from gemini_python_api import account, coininfo, orders
 
 logging.basicConfig(level=logging.INFO,
                     format='{asctime} {levelname:<8} {message}',
