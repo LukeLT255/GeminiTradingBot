@@ -1,0 +1,16 @@
+Metadata-Version: 1.1
+Name: gemini_python_library
+Version: 0.0.3
+Summary: Modules for working with Gemini's API in a pythonic way
+Home-page: UNKNOWN
+Author: Luke Tyson
+Author-email: LukeLT25@gmail.com
+License: MIT
+Description: UNKNOWN
+Keywords: gemini_python_library
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Education
+Classifier: Operating System :: MacOS
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
