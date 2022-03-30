@@ -6,3 +6,7 @@
 2022-03-20 17:11:40,146 INFO     No grid levels ready to be replaced
 2022-03-20 17:11:40,146 INFO     
 
+2022-03-30 12:00:03,279 INFO     {'result': 'ok', 'details': {'cancelledOrders': [], 'cancelRejects': []}}
+2022-03-30 12:02:07,542 INFO     {'result': 'ok', 'details': {'cancelledOrders': [], 'cancelRejects': []}}
+2022-03-30 12:07:28,518 INFO     {'result': 'ok', 'details': {'cancelledOrders': [], 'cancelRejects': []}}
+2022-03-30 12:08:04,946 INFO     {'result': 'ok', 'details': {'cancelledOrders': [], 'cancelRejects': []}}

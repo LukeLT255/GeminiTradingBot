@@ -2,6 +2,8 @@ import logging
 import config
 import time
 from gemini_python_api import account, coininfo, orders
+from app import db
+from app import Account
 
 logging.basicConfig(level=logging.INFO,
                     format='{asctime} {levelname:<8} {message}',
@@ -14,17 +16,29 @@ sandbox = True
 symbols = ["ETHUSD"]
 
 
-
 def make_dem_trades():
+    availableBalances = account.account_detail.get_available_balances(config.gemini_api_key,
+                                                                      config.gemini_api_secret,
+                                                                      config.gemini_sandbox_api_key,
+                                                                      config.gemini_sandbox_api_secret, sandbox)
+    current_value = get_current_value_of_account(availableBalances)
+    accountValue = Account(currentValue=current_value)
+    db.session.add(accountValue)
+    db.session.commit()
+
     for symbol in symbols:
         time.sleep(1)
         currentPrice = get_current_price(symbol)
         time.sleep(1)
         lookBackAmount = 30
         lookBackInterval = '1day'
-        resistanceLevel = get_high(symbol, lookBackAmount=lookBackAmount, lookBackInterval=lookBackInterval, average=True)
+        resistanceLevel = get_high(symbol, lookBackAmount=lookBackAmount, lookBackInterval=lookBackInterval,
+                                   average=True)
         supportLevel = get_low(symbol, lookBackAmount=lookBackAmount, lookBackInterval=lookBackInterval, average=True)
-        availableBalances = account.account_detail.get_available_balances(config.gemini_api_key, config.gemini_api_secret, config.gemini_sandbox_api_key, config.gemini_sandbox_api_secret, sandbox)
+        availableBalances = account.account_detail.get_available_balances(config.gemini_api_key,
+                                                                          config.gemini_api_secret,
+                                                                          config.gemini_sandbox_api_key,
+                                                                          config.gemini_sandbox_api_secret, sandbox)
         availableCash = get_current_cash_balance(availableBalances)
         currentCoinBalance = get_current_coins_owned(availableBalances, symbol)
         tickSize = get_tick_size(symbol)
@@ -36,13 +50,14 @@ def make_dem_trades():
         time.sleep(1)
         pastTrades = get_past_trades(symbol)
 
-        EVEN_GRID = False # starts grid with even # of buys and sells; otherwise, grid is started with buys below current price and sells above
+        EVEN_GRID = False  # starts grid with even # of buys and sells; otherwise, grid is started with buys below current price and sells above
 
-        if currentPrice < supportLevel: # If price below s level, it waits until price rises and does nothing
+        if currentPrice < supportLevel:  # If price below s level, it waits until price rises and does nothing
             RESET_GRID = True
-        elif currentPrice > resistanceLevel: #take profit if current price is higher than resistance level
+        elif currentPrice > resistanceLevel:  # take profit if current price is higher than resistance level
             time.sleep(1)
-            orders.new_order.sell_order(symbol, currentCoinBalance, round(currentPrice*0.95, 2), 'exchange limit', sandbox, options='immediate-or-cancel')
+            orders.new_order.sell_order(symbol, currentCoinBalance, round(currentPrice * 0.95, 2), 'exchange limit',
+                                        sandbox, options='immediate-or-cancel')
             RESET_GRID = True
         else:
             RESET_GRID = False
@@ -53,21 +68,25 @@ def make_dem_trades():
         time.sleep(1)
         openBuyOrders = get_open_buy_orders(symbol)
 
-        if len(openSellOrders) == 0 and len(openBuyOrders) == 0 and supportLevel < currentPrice < resistanceLevel:  # sets up grid if there are no open orders
+        if len(openSellOrders) == 0 and len(
+                openBuyOrders) == 0 and supportLevel < currentPrice < resistanceLevel:  # sets up grid if there are no open orders
             logging.info('Grid Start-Up')
-            set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell, EVEN_GRID, tickSize)
+            set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell,
+                        EVEN_GRID, tickSize)
 
-        elif RESET_GRID and supportLevel < currentPrice < resistanceLevel: # cancels all open orders and resets grid
+        elif RESET_GRID and supportLevel < currentPrice < resistanceLevel:  # cancels all open orders and resets grid
             time.sleep(1)
             orderCancel = orders.cancel_order.cancel_all_active_orders(sandbox)
             logging.info(orderCancel)
             logging.inf('Grid Reset')
-            set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell, EVEN_GRID, tickSize)
+            set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell,
+                        EVEN_GRID, tickSize)
 
-        elif len(openBuyOrders) + len(openSellOrders) > 0 and supportLevel < currentPrice < resistanceLevel: # checks open orders and previous filled orders to place new orders on the grid
+        elif len(openBuyOrders) + len(
+                openSellOrders) > 0 and supportLevel < currentPrice < resistanceLevel:  # checks open orders and previous filled orders to place new orders on the grid
             check_and_replace(symbol, openSellOrders, openBuyOrders, pastTrades, currentPrice, EVEN_GRID, ordersToPlace)
 
-        else: #cancels open orders and does nothing until current price is back between s and r
+        else:  # cancels open orders and does nothing until current price is back between s and r
             time.sleep(1)
             orderCancel = orders.cancel_order.cancel_all_active_orders(sandbox)
             logging.info(orderCancel)
@@ -109,7 +128,6 @@ def get_low(symbol, lookBackAmount, lookBackInterval, average):
         low = sum(lows[0:10]) / 10
     else:
         low = min(lows)
-
 
     # print(low)
     return round(low, 2)
@@ -195,6 +213,7 @@ def get_past_sell_trades(symbol):
     # print(sell_trades)
     return sell_trades
 
+
 def get_hundred_day_average(symbol):
     candles = coininfo.public_info.get_candles(symbol, sandbox, timeInterval="1day")
     closes = []
@@ -209,6 +228,7 @@ def get_hundred_day_average(symbol):
     # print(average)
     return average
 
+
 def get_past_trades(symbol):
     past_trades = orders.order_status.get_past_trades(sandbox)
     trades = []
@@ -219,7 +239,11 @@ def get_past_trades(symbol):
     # print(trades)
     return trades
 
-
+def get_current_value_of_account(balances):
+    total = 0
+    for balance in balances:
+        total += round(float(balance['amount']), 2)
+    return total
 
 
 
@@ -233,17 +257,17 @@ def set_up_grid(symbol, low, high, currentPrice, gridLevels, amountToBuy, amount
     logging.info('High: ' + f'{high}')
     logging.info('Low: ' + f'{low}')
 
-
-    for i in range(gridLevels): #creates a list of grid levels
+    for i in range(gridLevels):  # creates a list of grid levels
         level = round(low + distance_between_orders * i, 2)
         grids.append(level)
-        if level > currentPrice: #keeps track of how many sell orders initially placed
+        if level > currentPrice:  # keeps track of how many sell orders initially placed
             totalSellOrders += 1
 
     initialAmountToBuy = round(totalSellOrders * amountToBuy, tickSize)
 
     time.sleep(1)
-    startUpBuy = orders.new_order.buy_order(symbol, initialAmountToBuy, round(currentPrice*1.05, 2), 'exchange limit', sandbox, options='immediate-or-cancel')
+    startUpBuy = orders.new_order.buy_order(symbol, initialAmountToBuy, round(currentPrice * 1.05, 2), 'exchange limit',
+                                            sandbox, options='immediate-or-cancel')
     logging.info('Start Up Buy: ')
     logging.info(startUpBuy)
 
@@ -273,17 +297,16 @@ def set_up_grid(symbol, low, high, currentPrice, gridLevels, amountToBuy, amount
 
 
 def check_and_replace(symbol, openSellOrders, openBuyOrders, pastTrades, currentPrice, EVEN_GRID, ordersToPlace):
-    if EVEN_GRID: # check and replace for even grid
+    if EVEN_GRID:  # check and replace for even grid
         pass
 
-    else: #check and replace for trailing grid
+    else:  # check and replace for trailing grid
         totalOpenOrders = len(openSellOrders) + len(openBuyOrders)
 
         # print('All open buy orders: ')
         # for order in openBuyOrders:
         #     print(order)
         #     print('\n')
-
 
         # print('All open sell orders: ')
         # for order in openSellOrders:
@@ -295,7 +318,6 @@ def check_and_replace(symbol, openSellOrders, openBuyOrders, pastTrades, current
         for i in range(totalOrdersToReplace):
             logging.info(pastTrades[i])
             logging.info('\n')
-
 
         if totalOrdersToReplace == 0:
             logging.info("Grid full")
@@ -323,7 +345,3 @@ def check_and_replace(symbol, openSellOrders, openBuyOrders, pastTrades, current
 
     logging.info('\n')
     return
-
-
-
-
