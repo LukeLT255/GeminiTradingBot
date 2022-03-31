@@ -22,7 +22,7 @@ def make_dem_trades():
                                                                       config.gemini_sandbox_api_key,
                                                                       config.gemini_sandbox_api_secret, sandbox)
     current_value = get_current_value_of_account(availableBalances)
-    accountValue = Account(currentValue=current_value)
+    accountValue = Account(value=current_value)
     db.session.add(accountValue)
     db.session.commit()
 

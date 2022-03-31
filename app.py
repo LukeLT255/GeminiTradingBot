@@ -8,11 +8,11 @@ db = SQLAlchemy(app)
 
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    currentValue = db.Column(db.Float, nullable=False)
-    currentTime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    value = db.Column(db.Float, nullable=False)
+    time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"Current value: {self.currentValue} - Current time: {self.currentTime}"
+        return f"Current value: {self.value} - Current time: {self.time}"
 
 
 @app.route('/')
@@ -25,7 +25,7 @@ def get_all_values():
 
     output = []
     for value in values:
-        value_data = {'value': value.currentValue, 'time': value.currentTime}
+        value_data = {'value': value.value, 'time': value.time}
 
         output.append(value_data)
 
