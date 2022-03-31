@@ -30,3 +30,6 @@ def get_all_values():
         output.append(value_data)
 
     return {"values": output}
+
+if __name__ == "__main__":
+   app.run(host='0.0.0.0', port=5000)
