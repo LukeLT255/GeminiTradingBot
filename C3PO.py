@@ -78,7 +78,7 @@ def make_dem_trades():
             time.sleep(1)
             orderCancel = orders.cancel_order.cancel_all_active_orders(sandbox)
             logging.info(orderCancel)
-            logging.inf('Grid Reset')
+            logging.info('Grid Reset')
             set_up_grid(symbol, supportLevel, resistanceLevel, currentPrice, ordersToPlace, amountToBuy, amountToSell,
                         EVEN_GRID, tickSize)
 
