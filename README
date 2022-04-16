@@ -1,0 +1,8 @@
+Hullo!
+
+This app uses a grid trading strategy to buy and sell cryptocurrencies.
+The orders are placed through the gemini API. The scheduler.py program
+runs the function in C3PO called make_dem_trades() to place orders. The
+program is automated to run every five minutes with a cronjob.
+
+Thanks for checking it out!
