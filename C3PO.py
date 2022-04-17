@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO,
                     filename='%slog' % __file__[:-2],
                     filemode='a')
 
-sandbox = True
+sandbox = False
 
 symbols = ["ETHUSD"]
 
